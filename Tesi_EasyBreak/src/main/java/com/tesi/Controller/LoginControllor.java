@@ -63,7 +63,7 @@ import java.text.ParseException;
           }
 
 
-          //method to update tha email
+          //method to update tha password
           @RequestMapping("ChangePassword")
           @PostMapping
           public Response changePassword(@RequestHeader("token") String token, @RequestHeader("id") int id, @RequestHeader("typeUser") String typeUser,@RequestBody User u, HttpServletResponse response)
