@@ -21,15 +21,18 @@ import java.util.ArrayList;
 public class ManageMenuService {
     public Response getDishes (Token token) throws SQLException, ClassNotFoundException {
 
-        //i take all dishes associated to the admin trough the id of admin
+        //i take all dishes associated to the admin through the id of admin
         String queryGetDishes = "Select * from dish where idAdmin = ?";
+        
         //jdbc instance
         jdbcConnection conn = new jdbcConnection().getInstance();
+        
         //execute select query
         PreparedStatement myState = conn.getConnection().prepareStatement(queryGetDishes);
         myState.setInt(1,token.getIdUser());
         ResultSet myRes = myState.executeQuery();
         ManageToken mt = new ManageToken();
+        
         //i create a list of dishes taked from db that i'll return in the get api in manageMenuController
         ArrayList<Dish> dishes = new ArrayList<>();
 
@@ -68,9 +71,9 @@ public class ManageMenuService {
         String today= dtf.format(now);
 
         //i use this switch to handling the case in wich admin or client select new dish and trough the session i can save
-        //the data empty (the user didn't select anything ), it mean the user selected the dish but i did'nt press "CONFERMA" (first case)
+        //the data empty (the user didn't select anything), it means that user selected the dish but he didn't press "CONFERMA" (first case)
         //second case he pressed "CONFERMA" so i add a new order if the user is a client or a new dish if the user is admin
-        //and after i set the dishes session whit an empty array because the dish o the order were added
+        //and after i set the dishes session with an empty array because the dish or the order were added
         //third case i set the dishes session with the data that i pass in apicall
         switch (status){
               case "E":
@@ -86,8 +89,8 @@ public class ManageMenuService {
                       myState1.setInt(1, dishes.get(i).getId());
                       rowAffected = myState1.executeUpdate();
 
-                      //the admin can change his menu , add and remove the dishes
-                      //so if row effetcted >0 means that this dish exists and is a dish tha the user wanna remove so i drop from list
+                      //the admin can change his menu, add and remove the dishes
+                      //so if row effetcted >0 means that this dish exists and is a dish that user wanna remove, so i drop it from list
                       //else he wanna add a new dish and i add it in the list
                       if (rowAffected < 1) {
                           myState.setString(1, dishes.get(i).getDishName());
@@ -113,9 +116,7 @@ public class ManageMenuService {
 
                       for(int i=0; i< dishes.size(); i++) {
 
-                          //the admin can change his menu , add and remove the dishes
-                          //so if row effetcted >0 means that this dish exists and is a dish tha the user wanna remove so i drop from list
-                          //else he wanna add a new dish and i add it in the list
+                          //the client added new orders so i add a new commands in db using as idCommand the last idCommand incremented of one
                           myState1.setInt(1, commandId);
                           myState1.setString(2, today);
                           myState1.setString(3, "inCorso");
